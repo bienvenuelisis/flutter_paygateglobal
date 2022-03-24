@@ -1,5 +1,3 @@
-import 'dart:math';
-
 String generateIdentifier(int length, int Function(int max) nextInt) {
   return String.fromCharCodes(
     Iterable.generate(
@@ -13,5 +11,3 @@ String generateIdentifier(int length, int Function(int max) nextInt) {
 
 const String _chars =
     'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-
-final Random _rnd = Random();
