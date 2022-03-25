@@ -5,7 +5,10 @@ import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 ///paiement mise à votre disposition. Cette page est accessible via le lien
 /// ci dessous.
 /// Flooz & TMoney
-Future<bool> launchPageCustomTab(String link, [Color? color,]) async {
+Future<bool> launchPageCustomTab(
+  String link, [
+  Color? color,
+]) async {
   try {
     await launch(
       link,

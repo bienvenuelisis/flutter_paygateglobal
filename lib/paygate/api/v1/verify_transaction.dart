@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-
 import '../../models/index.dart';
 
 final Uri uriVerifyV1Post = Uri.https("paygateglobal.com", "/api/v1/status");

@@ -1,4 +1,3 @@
-
 import '../config/providers.dart';
 
 class TransactionInfo {
