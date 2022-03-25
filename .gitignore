@@ -28,3 +28,8 @@
 .dart_tool/
 .packages
 build/
+.history/
+
+.flutter-plugins
+.flutter-plugins-dependencies
+example/pubspec.lock
