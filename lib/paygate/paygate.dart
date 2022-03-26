@@ -70,7 +70,9 @@ class Paygate {
       phoneNumber: phoneNumber,
       provider: provider,
       amount: amount,
-      identifier : (identifier ?? "").isNotEmpty ? identifier! : (await PaygateConfig.newUniqIdentifier),
+      identifier: (identifier ?? "").isNotEmpty
+          ? identifier!
+          : (await PaygateConfig.newUniqIdentifier),
       description: description,
     );
   }
@@ -86,7 +88,9 @@ class Paygate {
     return payViaPaygateV2(
       _token,
       amount,
-      (identifier ?? "").isNotEmpty ? identifier! : (await PaygateConfig.newUniqIdentifier),
+      (identifier ?? "").isNotEmpty
+          ? identifier!
+          : (await PaygateConfig.newUniqIdentifier),
       description: description,
       callbackUrl: callbackUrl,
       phoneNumber: phoneNumber,

@@ -327,9 +327,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 responseMethod2 = response;
                                 initializing2 = false;
                                 toast(
-                                context,
-                                "You will receive a dial dialog confirmation on your mobile phone.",
-                              );
+                                  context,
+                                  "You will receive a dial dialog confirmation on your mobile phone.",
+                                );
                               },
                             );
                           }
