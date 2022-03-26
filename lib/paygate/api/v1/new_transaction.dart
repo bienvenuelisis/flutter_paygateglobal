@@ -100,7 +100,7 @@ class _NewTransactionResponseV1 {
   factory _NewTransactionResponseV1.fromJson(dynamic json) {
     try {
       return _NewTransactionResponseV1(
-        json['tx_reference'],
+        json['tx_reference'].toString(),
         status: statusFromInt(int.tryParse(json['status'].toString())),
       );
     } catch (e) {
