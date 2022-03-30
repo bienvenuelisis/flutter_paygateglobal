@@ -270,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Paygate.payV1(
                               phoneNumber: phoneNumber,
                               provider: provider,
-                              amount: 10000,
+                              amount: 1,
                               description:
                                   "Test Payment Method 1 : flutter_paygateglobal",
                             ).then((response) {
@@ -319,9 +319,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             Paygate.payV2(
                               phoneNumber: phoneNumber,
                               provider: provider,
-                              amount: 10000,
+                              amount: 1,
                               description:
-                                  "Test Payment Method 1 : flutter_paygateglobal",
+                                  "Test Payment Method 2 : flutter_paygateglobal",
                             ).then(
                               (response) {
                                 responseMethod2 = response;
