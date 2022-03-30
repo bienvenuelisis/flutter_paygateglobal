@@ -13,6 +13,13 @@ and the Flutter guide for
 
 # Integrate easily the Paygate Global Platform into your Flutter app
 
+<!--<div style="width: 260px; height: 32px; padding: 6px; background: #FFFFFF">
+    <img src="https://storage.googleapis.com/cms-storage-bucket/c823e53b3a1a7b0d36a9.png" />
+    <img src="https://paygateglobal.com/assets/logo-99cc62bdc693bd28b9f95fee64e71ed3ed266fa4e9dfdb196515f8a7251cc54e.png"/>
+    <img src="example/assets/moov_money.png" />
+    <img src="example/assets/tmoney.png" />
+</div>-->
+
 ## Features
 
 - Implement payment with the Paygate Global Platform.
