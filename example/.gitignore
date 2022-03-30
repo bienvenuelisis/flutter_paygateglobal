@@ -50,5 +50,6 @@ test/
 ios/
 web/
 windows/
+linux/
 
 .metadata
