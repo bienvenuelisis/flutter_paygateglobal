@@ -1,11 +1,9 @@
-import 'api/balance/index.dart';
 import 'api/v1/new_transaction.dart';
 import 'api/v1/verify_transaction.dart';
 import 'api/v2/new_transaction.dart';
 import 'api/v2/verify_transaction.dart';
 import 'config/paygate_config.dart';
 import 'config/providers.dart';
-import 'models/account_balance.dart';
 import 'models/index.dart';
 
 export 'api/v1/new_transaction.dart';
@@ -208,9 +206,9 @@ class Paygate {
     }
   }
 
-  static Future<AccountBalance> checkBalance([
+  /* static Future<AccountBalance> checkBalance([
     bool debugAccount = false,
   ]) async {
     return BalanceAPI.check(Paygate._token);
-  }
+  } */
 }
