@@ -150,6 +150,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        /* actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const BalancePage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.account_balance_wallet),
+          )
+        ], */
       ),
       body: Center(
         child: Padding(
