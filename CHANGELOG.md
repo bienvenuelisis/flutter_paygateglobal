@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Update example project (replace RaisedButton by TextButton).
+
 ## 0.1.1
 
 - Add example folders.
@@ -7,4 +11,3 @@
 
 - Initialize a transaction throw the API method 1 or 2.
 - Check the transaction status.
-
