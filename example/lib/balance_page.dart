@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_paygateglobal/flutter_paygateglobal.dart';
 import 'package:flutter_paygateglobal/paygate/models/account_balance.dart';
 
 class BalancePage extends StatefulWidget {
@@ -12,15 +11,15 @@ class BalancePage extends StatefulWidget {
 class _BalancePageState extends State<BalancePage> {
   @override
   void initState() {
-    _checkBalance();
+    //_checkBalance();
     super.initState();
   }
 
   AccountBalance? _balance;
 
-  void _checkBalance() {
+  /* void _checkBalance() {
     Paygate.checkBalance().then((value) => setState(() => {_balance = value}));
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
