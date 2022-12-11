@@ -1,7 +1,7 @@
 name: flutter_paygateglobal
 description: Integrate easily the Paygate Global Platform into your Flutter app.
 version: 0.1.1
-homepage: "https://github.com/bienvenuelisis/flutter_paygateglobal"
+homepage: https://pub.dev/packages/flutter_paygateglobal
 
 environment:
   sdk: ">=2.16.0 <3.0.0"

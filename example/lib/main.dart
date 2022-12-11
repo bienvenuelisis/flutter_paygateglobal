@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_paygateglobal/flutter_paygateglobal.dart';
 import 'package:flutter_paygateglobal/paygate/config/paygate_config.dart';
@@ -162,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 const Divider(height: 15),
                 generatingIdentifier
                     ? const CircularLoader()
-                    : RaisedButton(
+                    : TextButton(
                         child: const Text('Generate new uniq Identifier'),
                         onPressed: () {
                           generatingIdentifier = true;
@@ -260,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 initializing1
                     ? const CircularLoader()
-                    : RaisedButton(
+                    : TextButton(
                         child: const Text('Pay Method 1'),
                         onPressed: () {
                           if (_key.currentState?.validate() ?? false) {
@@ -309,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 initializing2
                     ? const CircularLoader()
-                    : RaisedButton(
+                    : TextButton(
                         child: const Text('Pay Method 2'),
                         onPressed: () {
                           if (_key.currentState?.validate() ?? false) {
