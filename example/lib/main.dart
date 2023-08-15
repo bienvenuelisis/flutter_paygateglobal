@@ -523,8 +523,7 @@ class _TransactionResume extends StatelessWidget {
                           transaction!.info.provider!.name.toUpperCase(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: transaction!.status ==
-                                    NewTransactionResponseStatus.success
+                            color: transaction!.status == TransactionStatus.done
                                 ? Colors.green
                                 : Colors.red,
                           ),
