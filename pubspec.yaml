@@ -4,7 +4,7 @@ homepage: https://pub.dev/packages/flutter_paygateglobal
 #publish_to: https://onepub.dev/api/yonhnoflyg/
 description: Integrate easily the Paygate Global Platform into your Flutter app.
 environment: 
-  sdk: '>=2.16.0 <3.0.0'
+  sdk: '>=2.16.0 <4.0.0'
   flutter: '>=1.17.0'
 dependencies: 
   http: ^1.1.0
