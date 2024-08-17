@@ -10,21 +10,26 @@ Future<bool> launchPageCustomTab(
   Color? color,
 ]) async {
   try {
-    await launch(
-      link,
-      customTabsOption: CustomTabsOption(
-        toolbarColor: color,
-        enableDefaultShare: true,
-        enableUrlBarHiding: true,
-        showPageTitle: true,
-        enableInstantApps: true,
+    await launchUrl(
+      Uri.parse(link),
+      customTabsOptions: CustomTabsOptions(
+        colorSchemes: CustomTabsColorSchemes.defaults(
+          toolbarColor: color,
+        ),
+        browser: const CustomTabsBrowserConfiguration(
+          fallbackCustomTabs: <String>[
+            // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
+            'org.mozilla.firefox',
+            // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
+            'com.microsoft.emmx',
+          ],
+        ),
+        instantAppsEnabled: true,
+        // toolbarColor: color,
+        shareState: CustomTabsShareState.on,
+        showTitle: true,
+        urlBarHidingEnabled: true,
         //headers: {},
-        extraCustomTabs: const <String>[
-          // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
-          'org.mozilla.firefox',
-          // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
-          'com.microsoft.emmx',
-        ],
       ),
     );
     return true;

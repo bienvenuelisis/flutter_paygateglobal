@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+* Update dependencies.
+
 ## 0.1.3
 
 * Update http package to 0.13.4 to 1.1.0.
