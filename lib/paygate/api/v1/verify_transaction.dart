@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../config/api_endpoints.dart';
 import '../../models/index.dart';
-
-final Uri uriVerifyV1Post = Uri.https("paygateglobal.com", "/api/v1/status");
 
 ///@param txReference : Identifiant Unique précédemment généré par PayGateGlobal pour la transaction
 Future<Transaction> verifyPaymentViaPaygateV1(
@@ -14,9 +13,9 @@ Future<Transaction> verifyPaymentViaPaygateV1(
   Transaction response;
 
   try {
-    http.Response post = await http.post(uriVerifyV1Post, body: {
-      "auth_token": token,
-      "tx_reference": txReference,
+    final post = await http.post(PaygateApiEndpoints.verifyV1, body: {
+      'auth_token': token,
+      'tx_reference': txReference,
     });
 
     response = Transaction.fromV1(jsonDecode(post.body));

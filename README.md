@@ -1,29 +1,38 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Flutter PayGate Global
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+Integrate **PayGate Global** payment platform seamlessly into your Flutter applications with support for **T-Money** and **Moov Money** (Flooz) payment providers.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-# Integrate easily the Paygate Global Platform into your Flutter app
-
-<!--<div style="width: 260px; height: 32px; padding: 6px; background: #FFFFFF">
-    <img src="https://storage.googleapis.com/cms-storage-bucket/c823e53b3a1a7b0d36a9.png" />
+<div style="width: 260px; height: 32px; padding: 6px; background: #FFFFFF">
     <img src="https://paygateglobal.com/assets/logo-99cc62bdc693bd28b9f95fee64e71ed3ed266fa4e9dfdb196515f8a7251cc54e.png"/>
     <img src="example/assets/moov_money.png" />
     <img src="example/assets/tmoney.png" />
-</div>-->
+</div>
+
+[![pub package](https://img.shields.io/pub/v/flutter_paygateglobal.svg)](https://pub.dev/packages/flutter_paygateglobal)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/bienvenuelisis/flutter_paygateglobal)](https://github.com/bienvenuelisis/flutter_paygateglobal/issues)
 
 ## Features
 
-- Implement payment with the Paygate Global Platform.
-- Support for two payment providers : T-Money and Moov Money.
+- 🔄 **Dual API Support**: Choose between API v1 (direct) and v2 (hosted page)
+- 📱 **Mobile Money Integration**: Support for T-Money and Moov Money
+- 🔒 **Secure Payments**: All transactions are secured by PayGate Global
+- ✅ **Transaction Verification**: Built-in status checking
+
+## Installation
+
+Add to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter_paygateglobal: ^0.1.5
+```
+
+Run:
+
+```bash
+flutter pub get
+
 
 ## Defining terms uses
 
@@ -68,6 +77,13 @@ NewTransactionResponse response = await Paygate.payV1(
     description: 'My awesome transaction', // optional : description of the transaction
     phoneNumber: '90010203', // required : phone number of the user
 );
+
+if (response.ok) {
+    print('Transaction initiated: ${response.txReference}');
+    // Save reference for later verification
+} else {
+    print('Transaction failed: ${response.exception}');
+}
 ```
 
  2.You make a get request to a payment page provided and secured by Paygate.
@@ -81,6 +97,10 @@ NewTransactionResponse response = await Paygate.payV2(
     description: 'My awesome transaction', // optional : description of the transaction
     phoneNumber: '90010203', // required : phone number of the user
 );
+
+if (response.ok) {
+    print('Payment page opened: ${response.txReference}');
+}
 ```
 
 Once payment is made by the customer, PayGateGlobal will send a confirmation message to the e-commerce return URL (If previously provided).
@@ -112,17 +132,141 @@ if (response.ok) {
 }
 
 // After a delay, you can check the transaction status.
-Transaction transaction = await response.verify(); 
+Transaction transaction = await response.verify();
 
-// or 
+// Or using static method
+Transaction transaction = await Paygate.verifyTransaction(
+  txReference: 'your-tx-reference', // From PayGate
+  // OR
+  trxIdentifier: 'your-identifier', // Your custom identifier
+);
 
-Transaction transaction = await Paygate.verifyTransaction(txReference: response.txReference); // or Paygate.verifyTransaction(trxIdentifier: response.identifier);
+switch (transaction.status) {
+  case TransactionStatus.success:
+    print('Payment successful!');
+    break;
+  case TransactionStatus.pending:
+    print('Payment pending...');
+    break;
+  case TransactionStatus.failed:
+    print('Payment failed');
+    break;
+  default:
+    print('Unknown status');
+}
 ```
 
 _Please check the example directory for a complete example with suitable UI implementations._
 
-## Additional information
+## 📱 Supported Payment Providers
 
-I have wrote a article about this package on [my blog](https://blog.theresilient.dev/) which contains more detailled informations.
+| Provider | Code | Network | Countries |
+|----------|------|---------|-----------|
+| T-Money | `PaygateProvider.tmoney` | Togocom | Togo |
+| Moov Money (Flooz) | `PaygateProvider.moovMoney` | Moov Africa | Togo |
 
-File free to contribute or fill issues when you use this package.
+## 🔄 Transaction Lifecycle
+
+1. **Initiate**: Call `payV1()` or `payV2()`
+2. **Process**: User completes payment via mobile money
+3. **Callback**: PayGate sends confirmation to your callback URL (v2 only)
+4. **Verify**: Check transaction status programmatically
+5. **Complete**: Handle successful/failed payments in your app
+
+## 📊 Callback Payload (API v2)
+
+When using API v2, PayGate sends this JSON to your callback URL:
+
+```json
+{
+  "tx_reference": "PG_12345_67890",
+  "identifier": "your_custom_identifier",
+  "payment_reference": "TM_98765_43210",
+  "amount": "1000",
+  "datetime": "2024-01-15T10:30:00Z",
+  "phone_number": "90123456",
+  "payment_method": "T-Money"
+}
+```
+
+## 🧪 Testing
+
+Run tests:
+
+```bash
+flutter test
+```
+
+Test with mock data:
+
+```dart
+void initTestEnvironment() {
+  Paygate.init(
+    apiKey: 'test-api-key-12345678-1234-1234-1234-123456789012',
+    apiVersion: PaygateVersion.v2,
+  );
+}
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Invalid Phone Number**
+
+- Ensure format: 8 digits starting with 9, 7, or 2
+- Examples: `90123456`, `70123456`, `22890123456`
+
+**Transaction Failed**
+
+- Check your API key validity
+- Verify phone number has sufficient balance
+- Ensure amount is between 1 and 1,000,000 CFA
+
+**Network Errors**
+
+- Check internet connectivity
+- Verify PayGate Global service status
+- Test with debug API key first
+
+## 📖 API Reference
+
+### Classes
+
+- **`Paygate`**: Main class for payment operations
+- **`NewTransactionResponse`**: Response from payment initiation
+- **`Transaction`**: Transaction status and details
+- **`PaygateProvider`**: Enum for payment providers
+- **`PaygateVersion`**: Enum for API versions
+
+### Exceptions
+
+- **`PaygateValidationException`**: Invalid input parameters
+- **`PaygateNetworkException`**: Network connectivity issues
+- **`PaygateApiException`**: API-related errors
+- **`PaygateConfigurationException`**: Setup/configuration issues
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE)
+
+## 🆘 Support
+
+- 📧 **Email**: [agbavonbienvenu@gmail.com](mailto:agbavonbienvenu@gmail.com)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/bienvenuelisis/flutter_paygateglobal/issues)
+
+## 📈 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+---
+
+Made with ❤️ for the Flutter community, by The Authentic Dev (<https://00auth.dev>).

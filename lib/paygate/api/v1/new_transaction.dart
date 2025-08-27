@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../config/api_endpoints.dart';
 import '../../models/index.dart';
 import '../../paygate.dart';
-
-final Uri uriPayV1Post = Uri.https("paygateglobal.com", "/api/v1/pay");
 
 ///Pour initier une transaction, faites un simple appel HTTP de type Post vers
 ///le service web de PayGateGlobal et passer les paramètres requis.
@@ -21,8 +20,8 @@ Future<NewTransactionResponse> payViaPaygateV1({
   _NewTransactionResponseV1 response;
 
   try {
-    http.Response post = await http.post(
-      uriPayV1Post,
+    final post = await http.post(
+      PaygateApiEndpoints.payV1,
       body: _ParamsNewTransactionV1(
         authToken,
         phoneNumber,
@@ -37,7 +36,6 @@ Future<NewTransactionResponse> payViaPaygateV1({
   } catch (e) {
     response = _NewTransactionResponseV1(
       null,
-      status: NewTransactionResponseStatus.none,
       exception: e.toString(),
     );
   }
@@ -46,6 +44,15 @@ Future<NewTransactionResponse> payViaPaygateV1({
 }
 
 class _ParamsNewTransactionV1 {
+  _ParamsNewTransactionV1(
+    this.authToken,
+    this.phoneNumber,
+    this.provider,
+    this.amount,
+    this.identifier, {
+    this.description,
+  });
+
   /// Jeton d’authentification de l’e-commerce (Clé API)
   final String authToken;
 
@@ -63,34 +70,17 @@ class _ParamsNewTransactionV1 {
 
   final PaygateProvider? provider;
 
-  _ParamsNewTransactionV1(
-    this.authToken,
-    this.phoneNumber,
-    this.provider,
-    this.amount,
-    this.identifier, {
-    this.description,
-  });
-
   Map<String, dynamic> get body => {
-        "auth_token": authToken,
-        "phone_number": phoneNumber,
-        "amount": amount.toString(),
-        "description": description,
-        "identifier": identifier,
-        "network": networkFromProviderApiV1(provider),
+        'auth_token': authToken,
+        'phone_number': phoneNumber,
+        'amount': amount.toString(),
+        'description': description,
+        'identifier': identifier,
+        'network': networkFromProviderApiV1(provider),
       };
 }
 
 class _NewTransactionResponseV1 {
-  ///Identifiant Unique générée par PayGateGlobal pour la transaction
-  final String? txReference;
-
-  ///Code d’état de la transaction.
-  final NewTransactionResponseStatus? status;
-
-  final String? exception;
-
   _NewTransactionResponseV1(
     this.txReference, {
     this.status = NewTransactionResponseStatus.none,
@@ -112,12 +102,18 @@ class _NewTransactionResponseV1 {
     }
   }
 
-  NewTransactionResponse bridge(String identifier) {
-    return NewTransactionResponse(
-      txReference,
-      status: status,
-      identifier: identifier,
-      exception: exception,
-    );
-  }
+  ///Identifiant Unique générée par PayGateGlobal pour la transaction
+  final String? txReference;
+
+  ///Code d’état de la transaction.
+  final NewTransactionResponseStatus? status;
+
+  final String? exception;
+
+  NewTransactionResponse bridge(String identifier) => NewTransactionResponse(
+        txReference,
+        status: status,
+        identifier: identifier,
+        exception: exception,
+      );
 }

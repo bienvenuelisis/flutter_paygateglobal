@@ -1,12 +1,9 @@
 import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../config/api_endpoints.dart';
 import '../../config/providers.dart';
-
 import '../../models/index.dart';
-import '../../utils/http_get_params.dart';
-import '../../utils/tab_launcher.dart';
-
-const String linkV2PageGet = "https://paygateglobal.com/v1/page";
 
 Future<NewTransactionResponse> payViaPaygateV2(
   String token,
@@ -19,18 +16,19 @@ Future<NewTransactionResponse> payViaPaygateV2(
   Color? color,
 }) async {
   try {
-    await launchPageCustomTab(
-      _ParamsNewTransactionV2(
-        token,
-        amount,
-        identifier,
-        description: description,
-        callbackUrl: callbackUrl,
-        phoneNumber: phoneNumber,
-        provider: provider,
-      ).paygateLink,
-      color,
-    );
+    final url = _ParamsNewTransactionV2(
+      token,
+      amount,
+      identifier,
+      description: description,
+      callbackUrl: callbackUrl,
+      phoneNumber: phoneNumber,
+      provider: provider,
+    ).paygateLink;
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+    }
 
     return NewTransactionResponse(
       null,
@@ -47,6 +45,16 @@ Future<NewTransactionResponse> payViaPaygateV2(
 }
 
 class _ParamsNewTransactionV2 {
+  _ParamsNewTransactionV2(
+    this.token,
+    this.amount,
+    this.identifier, {
+    this.description,
+    this.callbackUrl,
+    this.phoneNumber,
+    this.provider,
+  });
+
   ///Jeton d’authentification de l’e-commerce (Clé API)
   final String token;
 
@@ -68,31 +76,20 @@ class _ParamsNewTransactionV2 {
 
   final PaygateProvider? provider;
 
-  _ParamsNewTransactionV2(
-    this.token,
-    this.amount,
-    this.identifier, {
-    this.description,
-    this.callbackUrl,
-    this.phoneNumber,
-    this.provider,
-  });
-
   ///Réseau du numéro de téléphone (ex: MOOV, TOGOCEL).
   ///Si ce parametre n'est pas fourni, le client devra manuellement choisir son réseau.
   String? get network => networkFromProviderApiV2(provider);
 
   Map<String, dynamic> get body => {
-        "token": token,
-        "amount": amount.toString(),
-        "description": description,
-        "identifier": identifier,
-        "url": callbackUrl,
-        "phone": phoneNumber,
-        "network": network,
+        'token': token,
+        'amount': amount.toString(),
+        'description': description,
+        'identifier': identifier,
+        'url': callbackUrl,
+        'phone': phoneNumber,
+        'network': network,
       };
 
   ///Le client sera redirigé vers une page de paygate global.
-  ///eg: https://paygateglobal.com/v1/page?token=1234&amount=300&description=test&identifier=10
-  String get paygateLink => getUrl(linkV2PageGet, body);
+  Uri get paygateLink => PaygateApiEndpoints.getPaymentPageUrl(body);
 }

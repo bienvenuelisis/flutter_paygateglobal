@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+* Enhance documentation.
+* Update app architecture.
+* Made library more developer-friendly.
+
 ## 0.1.4
 
 * Update dependencies.
