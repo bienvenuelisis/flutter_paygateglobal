@@ -5,6 +5,7 @@ import 'api/v2/verify_transaction.dart';
 import 'config/paygate_config.dart';
 import 'config/providers.dart';
 import 'models/index.dart';
+import 'utils/http_client.dart';
 
 export 'api/v1/new_transaction.dart';
 export 'config/providers.dart';
@@ -17,27 +18,29 @@ enum PaygateVersion {
 class Paygate {
   /// Initialize plugin.
   static void init({
+    required String apiKey,
     int identifierLength = 20,
     PaygateVersion? apiVersion,
-    required String apiKey,
     String? apiKeyDebug,
+    bool allowBadCertificates = false,
   }) {
     PaygateConfig.version = apiVersion ?? PaygateVersion.v2;
     PaygateConfig.paygateAPIKeyProd = apiKey;
     PaygateConfig.paygateAPIKeyDebug = apiKeyDebug ?? apiKey;
     PaygateConfig.transactionIdentifierLength = identifierLength;
+    PaygateHttpClient().init(allowBadCertificates: allowBadCertificates);
   }
 
   static String get _token => PaygateConfig.token;
 
   static Future<NewTransactionResponse> pay({
+    required double amount,
+    required String phoneNumber,
+    required PaygateProvider provider,
     PaygateVersion? version,
     String? identifier,
     String? description,
     String? callbackUrl,
-    required double amount,
-    required String phoneNumber,
-    required PaygateProvider provider,
   }) {
     if ((version ?? PaygateConfig.version) == PaygateVersion.v1) {
       return payV1(
@@ -60,45 +63,43 @@ class Paygate {
   }
 
   static Future<NewTransactionResponse> payV1({
-    String? identifier,
-    String? description,
     required String phoneNumber,
     required PaygateProvider provider,
     required double amount,
-  }) async {
-    return payViaPaygateV1(
-      authToken: _token,
-      phoneNumber: phoneNumber,
-      provider: provider,
-      amount: amount,
-      identifier: (identifier ?? "").isNotEmpty
-          ? identifier!
-          : (await PaygateConfig.newUniqIdentifier),
-      description: description,
-    );
-  }
+    String? identifier,
+    String? description,
+  }) async =>
+      payViaPaygateV1(
+        authToken: _token,
+        phoneNumber: phoneNumber,
+        provider: provider,
+        amount: amount,
+        identifier: (identifier ?? '').isNotEmpty
+            ? identifier!
+            : (await PaygateConfig.newUniqIdentifier),
+        description: description,
+      );
 
   static Future<NewTransactionResponse> payV2({
+    required double amount,
     String? identifier,
     String? description,
     String? callbackUrl,
     String? phoneNumber,
     PaygateProvider? provider,
-    required double amount,
-  }) async {
-    return payViaPaygateV2(
-      _token,
-      amount,
-      (identifier ?? "").isNotEmpty
-          ? identifier!
-          : (await PaygateConfig.newUniqIdentifier),
-      description: description,
-      callbackUrl: callbackUrl,
-      phoneNumber: phoneNumber,
-      provider: provider,
-      color: PaygateConfig.customTabColor,
-    );
-  }
+  }) async =>
+      payViaPaygateV2(
+        _token,
+        amount,
+        (identifier ?? '').isNotEmpty
+            ? identifier!
+            : (await PaygateConfig.newUniqIdentifier),
+        description: description,
+        callbackUrl: callbackUrl,
+        phoneNumber: phoneNumber,
+        provider: provider,
+        color: PaygateConfig.customTabColor,
+      );
 
   static Future<NewTransactionResponse> payMoovMoney(
     double amount,
@@ -107,24 +108,23 @@ class Paygate {
     String? description,
     String? identifier,
     String? callbackUrl,
-  }) {
-    return version == PaygateVersion.v1
-        ? payV1(
-            phoneNumber: phoneNumber,
-            provider: PaygateProvider.moovMoney,
-            amount: amount,
-            description: description,
-            identifier: identifier,
-          )
-        : payV2(
-            amount: amount,
-            provider: PaygateProvider.moovMoney,
-            description: description,
-            callbackUrl: callbackUrl,
-            identifier: identifier,
-            phoneNumber: phoneNumber,
-          );
-  }
+  }) =>
+      version == PaygateVersion.v1
+          ? payV1(
+              phoneNumber: phoneNumber,
+              provider: PaygateProvider.moovMoney,
+              amount: amount,
+              description: description,
+              identifier: identifier,
+            )
+          : payV2(
+              amount: amount,
+              provider: PaygateProvider.moovMoney,
+              description: description,
+              callbackUrl: callbackUrl,
+              identifier: identifier,
+              phoneNumber: phoneNumber,
+            );
 
   static Future<void> payTMoney(
     double amount,
@@ -133,24 +133,23 @@ class Paygate {
     String? description,
     String? identifier,
     String? callbackUrl,
-  }) {
-    return version == PaygateVersion.v1
-        ? payV1(
-            phoneNumber: phoneNumber,
-            provider: PaygateProvider.tmoney,
-            amount: amount,
-            description: description,
-            identifier: identifier,
-          )
-        : payV2(
-            amount: amount,
-            provider: PaygateProvider.tmoney,
-            description: description,
-            callbackUrl: callbackUrl,
-            identifier: identifier,
-            phoneNumber: phoneNumber,
-          );
-  }
+  }) =>
+      version == PaygateVersion.v1
+          ? payV1(
+              phoneNumber: phoneNumber,
+              provider: PaygateProvider.tmoney,
+              amount: amount,
+              description: description,
+              identifier: identifier,
+            )
+          : payV2(
+              amount: amount,
+              provider: PaygateProvider.tmoney,
+              description: description,
+              callbackUrl: callbackUrl,
+              identifier: identifier,
+              phoneNumber: phoneNumber,
+            );
 
   /// Verify a transaction status via Paygate API.
   ///
@@ -168,9 +167,9 @@ class Paygate {
     }
 
     if (trxIdentifier == null) {
-      return await _verifyTransactionV1(txReference!);
+      return _verifyTransactionV1(txReference!);
     } else {
-      return await _verifyTransactionV2(trxIdentifier);
+      return _verifyTransactionV2(trxIdentifier);
     }
   }
 
@@ -185,7 +184,6 @@ class Paygate {
         info: TransactionInfo(
           txReference: txReference,
         ),
-        status: TransactionStatus.none,
       );
     }
   }
@@ -201,7 +199,6 @@ class Paygate {
         info: TransactionInfo(
           identifier: trxIdentifier,
         ),
-        status: TransactionStatus.none,
       );
     }
   }

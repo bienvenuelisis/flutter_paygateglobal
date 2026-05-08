@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../config/api_endpoints.dart';
 import '../../models/index.dart';
+import '../../utils/http_client.dart';
 
 ///@param txReference : Identifiant Unique précédemment généré par PayGateGlobal pour la transaction
 Future<Transaction> verifyPaymentViaPaygateV2(
@@ -13,7 +12,8 @@ Future<Transaction> verifyPaymentViaPaygateV2(
   Transaction response;
 
   try {
-    final post = await http.post(PaygateApiEndpoints.verifyV2, body: {
+    final post =
+        await PaygateHttpClient().post(PaygateApiEndpoints.verifyV2, body: {
       'auth_token': token,
       'identifier': identifier,
     });

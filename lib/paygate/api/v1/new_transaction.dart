@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../config/api_endpoints.dart';
+import '../../utils/http_client.dart';
 import '../../models/index.dart';
 import '../../paygate.dart';
 
@@ -20,7 +19,7 @@ Future<NewTransactionResponse> payViaPaygateV1({
   _NewTransactionResponseV1 response;
 
   try {
-    final post = await http.post(
+    final post = await PaygateHttpClient().post(
       PaygateApiEndpoints.payV1,
       body: _ParamsNewTransactionV1(
         authToken,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+* Fix SSL/TLS `HandshakeException` caused by self-signed certificates in some environments.
+* Add `allowBadCertificates` parameter to `Paygate.init()` to optionally bypass certificate verification (intended for development only — defaults to `false`).
+* Internally route all HTTP calls through `PaygateHttpClient` using `IOClient` for consistent SSL handling.
+
 ## 0.1.5
 
 * Enhance documentation.

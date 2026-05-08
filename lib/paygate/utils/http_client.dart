@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 import '../exceptions/paygate_exceptions.dart';
 import '../utils/logger.dart';
@@ -14,7 +15,7 @@ class PaygateHttpClient {
   static const Duration _defaultTimeout = Duration(seconds: 30);
   static final PaygateHttpClient _instance = PaygateHttpClient._internal();
 
-  late final http.Client _client;
+  late http.Client _client;
 
   /// Dispose the HTTP client
   void dispose() {
@@ -35,7 +36,7 @@ class PaygateHttpClient {
       final response = await _client.get(
         url,
         headers: {
-          'User-Agent': 'FlutterPayGateGlobal/0.1.5',
+          'User-Agent': 'FlutterPayGateGlobal/0.1.6',
           ...?headers,
         },
       ).timeout(effectiveTimeout);
@@ -71,9 +72,19 @@ class PaygateHttpClient {
     }
   }
 
-  /// Initialize the HTTP client with optimized settings
-  void init() {
-    _client = http.Client();
+  /// Initialize the HTTP client with optimized settings.
+  ///
+  /// Set [allowBadCertificates] to `true` only in development environments
+  /// to bypass SSL certificate verification (e.g. self-signed certificates).
+  /// **Never use this in production** as it disables HTTPS security.
+  void init({bool allowBadCertificates = false}) {
+    if (allowBadCertificates) {
+      final ioClient = HttpClient()
+        ..badCertificateCallback = (cert, host, port) => true;
+      _client = IOClient(ioClient);
+    } else {
+      _client = http.Client();
+    }
   }
 
   /// Make a POST request with timeout and error handling
@@ -94,7 +105,7 @@ class PaygateHttpClient {
             url,
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              'User-Agent': 'FlutterPayGateGlobal/0.1.5',
+              'User-Agent': 'FlutterPayGateGlobal/0.1.6',
               ...?headers,
             },
             body: body,

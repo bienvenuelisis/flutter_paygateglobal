@@ -25,7 +25,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_paygateglobal: ^0.1.5
+  flutter_paygateglobal: ^0.1.6
 ```
 
 Run:
@@ -57,6 +57,7 @@ Paygate.init(
   apiVersion: PaygateVersion.v1, // default PaygateVersion.v2
   apiKeyDebug: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX', // optional
   identifierLength: 20, // optional, default 20
+  allowBadCertificates: false, // optional, default false — set true only in dev for self-signed certs
 );
 ```
 
@@ -211,6 +212,19 @@ void initTestEnvironment() {
 ## 🐛 Troubleshooting
 
 ### Common Issues
+
+**SSL Handshake Error (`CERTIFICATE_VERIFY_FAILED`)**
+
+If you receive a `HandshakeException: Handshake error in client (OS Error: CERTIFICATE_VERIFY_FAILED: self signed certificate in certificate chain)`, your environment is using a self-signed or untrusted TLS certificate. You can bypass this **only in development**:
+
+```dart
+Paygate.init(
+  apiKey: 'your-api-key',
+  allowBadCertificates: true, // ⚠️ dev only — never use in production
+);
+```
+
+> **Warning**: Never ship `allowBadCertificates: true` in a production build. It disables all TLS certificate verification and exposes your app to man-in-the-middle attacks.
 
 **Invalid Phone Number**
 

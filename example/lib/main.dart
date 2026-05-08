@@ -141,7 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    Paygate.init(apiKey: "08b9094a-79af-48e1-9523-2eb21354d301");
+    Paygate.init(
+      apiKey: "08b9094a-79af-48e1-9523-2eb21354d301",
+      allowBadCertificates: true,
+    );
     super.initState();
   }
 
